@@ -1,1 +1,1 @@
-# satcodx-editor
+# satcodxeditor

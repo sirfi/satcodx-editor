@@ -164,7 +164,7 @@ export default {
       fetch(this.urlSdx)
         .then((x) => x.arrayBuffer())
         .then(function (buffer) {
-          let decoder = new TextDecoder("ISO-8859-9");
+          let decoder = new TextDecoder("windows-1254");
           let text = decoder.decode(buffer);
           that.textSdx = text;
           that.parseFileSdx();
@@ -178,7 +178,7 @@ export default {
         that.parseFileSdx();
       };
 
-      fr.readAsText(this.fileSdx, "ISO-8859-9");
+      fr.readAsText(this.fileSdx, "windows-1254");
     },
     parseFileSdx() {
       localStorage.setItem("textSdx", this.textSdx);

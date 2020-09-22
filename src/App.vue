@@ -1,16 +1,35 @@
 <template>
   <div id="app">
     <b-container class="py-3">
-      <b-form-file
-        v-model="fileSdx"
-        :state="Boolean(fileSdx)"
-        placeholder="Choose a SatcoDX file or drop it here..."
-        drop-placeholder="Drop SatcoDX file here..."
-        accept=".sdx"
-        class="mb-3"
-        @input="inputFileSdx"
-      ></b-form-file>
-
+      <b-input-group class="mb-3">
+        <template v-slot:prepend>
+          <b-input-group-text>Url</b-input-group-text>
+        </template>
+        <b-form-input
+          type="url"
+          v-model="urlSdx"
+          placeholder=".sdx file url"
+          :state="Boolean(urlSdx)"
+        ></b-form-input>
+        <template v-slot:append>
+          <b-button variant="primary" @click="readUrlSdx">Load</b-button>
+        </template>
+      </b-input-group>
+      <b-input-group class="mb-3">
+        <template v-slot:prepend>
+          <b-input-group-text>File</b-input-group-text>
+        </template>
+        <b-form-file
+          v-model="fileSdx"
+          :state="Boolean(fileSdx)"
+          placeholder="Choose a SatcoDX file or drop it here..."
+          drop-placeholder="Drop SatcoDX file here..."
+          accept=".sdx"
+        ></b-form-file>
+        <template v-slot:append>
+          <b-button variant="primary" @click="readFileSdx">Load</b-button>
+        </template>
+      </b-input-group>
       <b-row>
         <b-col>
           <b-card no-body>
@@ -129,6 +148,7 @@ export default {
       JSON.parse(localStorage.getItem("removedChannelList") || "[]") || [];
     return {
       fileSdx: null,
+      urlSdx: "channel-list-sample.sdx",
       textSdx: savedTextSdx,
       currentChannelList: savedCurrentChannelList,
       tempChannelList: savedTempChannelList,
@@ -139,8 +159,16 @@ export default {
     stickyfilljs.add([this.$refs.tempChannelListStickyRef]);
   },
   methods: {
-    inputFileSdx() {
-      this.readFileSdx();
+    readUrlSdx() {
+      var that = this;
+      fetch(this.urlSdx)
+        .then((x) => x.arrayBuffer())
+        .then(function (buffer) {
+          let decoder = new TextDecoder("ISO-8859-9");
+          let text = decoder.decode(buffer);
+          that.textSdx = text;
+          that.parseFileSdx();
+        });
     },
     readFileSdx() {
       var that = this;

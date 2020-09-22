@@ -11,6 +11,8 @@
     "bootstrap": "^4.5.2",
     "bootstrap-vue": "^2.17.3",
     "core-js": "^3.6.5",
+    "file-saver": "^2.0.2",
+    "stickyfilljs": "^2.1.0",
     "vue": "^2.6.11",
     "vuedraggable": "^2.24.1"
   },

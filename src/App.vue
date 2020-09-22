@@ -10,9 +10,17 @@
         class="mb-3"
         @input="inputFileSdx"
       ></b-form-file>
+
       <b-row>
         <b-col>
-          <h3>Current Channel List</h3>
+          <h3>
+            Current Channel List
+            <b-button
+              variant="primary"
+              class="float-right"
+              @click="exportToSdxFile"
+            >Export to sdx file</b-button>
+          </h3>
           <draggable
             class="list-group"
             :list="currentChannelList"
@@ -27,19 +35,21 @@
           </draggable>
         </b-col>
         <b-col>
-          <h3>Temp Channel List</h3>
-          <draggable
-            class="list-group"
-            :list="tempChannelList"
-            group="channelList"
-            @change="tempChannelListChanged"
-          >
-            <div
-              class="list-group-item"
-              v-for="element in tempChannelList"
-              :key="element.id"
-            >{{ element.name }}</div>
-          </draggable>
+          <div class="sticky" ref="tempChannelListStickyRef">
+            <h3>Temp Channel List</h3>
+            <draggable
+              class="list-group"
+              :list="tempChannelList"
+              group="channelList"
+              @change="tempChannelListChanged"
+            >
+              <div
+                class="list-group-item"
+                v-for="element in tempChannelList"
+                :key="element.id"
+              >{{ element.name }}</div>
+            </draggable>
+          </div>
         </b-col>
       </b-row>
     </b-container>
@@ -49,6 +59,8 @@
 <script>
 import draggable from "vuedraggable";
 import satcodx from "./satcodx";
+import stickyfilljs from "stickyfilljs";
+import { saveAs } from "file-saver";
 
 export default {
   name: "App",
@@ -67,6 +79,9 @@ export default {
       currentChannelList: savedCurrentChannelList,
       tempChannelList: savedTempChannelList,
     };
+  },
+  created() {
+    stickyfilljs.add([this.$refs.tempChannelListStickyRef]);
   },
   methods: {
     inputFileSdx() {
@@ -99,11 +114,31 @@ export default {
         JSON.stringify(this.tempChannelList)
       );
     },
+    exportToSdxFile() {
+      var exportTextSdx = "";
+      for (let index = 0; index < this.currentChannelList.length; index++) {
+        const channel = this.currentChannelList[index];
+        exportTextSdx +=
+          channel.rawLine + (channel.id.startsWith("103") ? "\n" : "\r\n");
+      }
+      exportTextSdx += "\0";
+      var exportTextSdxCharArray = new Uint8Array(exportTextSdx.length);
+      for (var i = 0; i < exportTextSdxCharArray.length; i++) {
+        exportTextSdxCharArray[i] = exportTextSdx.charCodeAt(i);
+      }
+      var blob = new Blob([exportTextSdxCharArray], { type: "text/plain" });
+      saveAs(blob, "channel-list-" + new Date().toISOString().replace(/[^0-9]/g,"").substr(0,12) + ".sdx");
+    },
   },
 };
 </script>
 
 <style>
 #app {
+}
+.sticky {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
 }
 </style>

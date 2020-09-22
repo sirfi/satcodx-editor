@@ -1,4 +1,4 @@
-# satcodxeditor
+# SatcoDX Editor
 
 ## Project setup
 ```

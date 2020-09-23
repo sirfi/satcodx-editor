@@ -5,7 +5,7 @@
         <b-icon-arrows-move></b-icon-arrows-move>
       </b-input-group-text>
     </template>
-    <b-form-input v-model="channel.name" @input="inputName" maxLength="20"></b-form-input>
+    <b-form-input v-model="channel.name" @input="inputName" v-bind:maxLength="channel.nameMaxLength"></b-form-input>
     <template v-slot:append>
       <b-input-group-text>{{channel.frequencyNumber}}</b-input-group-text>
       <b-button variant="danger" title="Remove" @click="$emit('remove', channel.id)">

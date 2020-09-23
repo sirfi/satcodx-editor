@@ -204,18 +204,7 @@ export default {
       );
     },
     exportToSdxFile() {
-      var exportTextSdx = "";
-      for (let index = 0; index < this.currentChannelList.length; index++) {
-        const channel = this.currentChannelList[index];
-        exportTextSdx +=
-          channel.rawLine + (channel.id.startsWith("103") ? "\n" : "\r\n");
-      }
-      exportTextSdx += "\0";
-      var exportTextSdxCharArray = new Uint8Array(exportTextSdx.length);
-      for (var i = 0; i < exportTextSdxCharArray.length; i++) {
-        exportTextSdxCharArray[i] = exportTextSdx.charCodeAt(i);
-      }
-      var blob = new Blob([exportTextSdxCharArray], { type: "text/plain" });
+      var blob = satcodx.generateBlob(this.currentChannelList);
       saveAs(
         blob,
         "channel-list-" +
